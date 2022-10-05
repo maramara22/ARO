@@ -1,0 +1,26 @@
+name: Cleanup Public ARO Resources
+on: [workflow_dispatch]
+env:
+  RESOURCEGROUP: 'aro-cluster-rg'
+
+jobs: 
+  cleanup_rg:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout code
+      uses: actions/checkout@main
+
+    - name: azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: hub cleanup
+      uses: azure/arm-deploy@v1
+      with:
+        scope: resourcegroup
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ env.RESOURCEGROUP }}
+        template: ./modules/resource_group_cleanup.bicep
+        deploymentMode: Complete
+        deploymentName: public-aro-resource-cleanup-github
