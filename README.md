@@ -33,20 +33,20 @@ Create a service principal that will run the github actions bicep modules. This 
 ```
 $ export SP_NAME="<insert name for the service principal here>"
 
-$ az az ad sp create-for-rbac -n $SP_NAME --role contributor --sdk-auth --scopes "/subscriptions/$SUBSCRIPTION/resourceGroups/$ARO_RG" > sp.txt
+$ az ad sp create-for-rbac -n $SP_NAME --role contributor --sdk-auth --scopes "/subscriptions/$SUBSCRIPTION/resourceGroups/$ARO_RG" > sp.txt
 
-$ export APPID=$(az ad sp list --all --query "[?displayName == '$SP_NAME'].appId" -o tsv)
-
-```
-
-### Scope the service principal's permissions to the hub and spoke resource groups
+$ export AAD_CLIENT_ID=$(az ad sp list --all --query "[?displayName == '$SP_NAME'].appId" -o tsv)
 
 ```
-$ export SCOPE_RG=$(az group create -n $ARO_RG -l $LOCATION --query id -o tsv)
+
+### Scope the service principal's permissions to the resource group
+
+```
+$ export SCOPE_RG=$(az group show -n $ARO_RG --query id -o tsv)
 
 
-$ az role assignment create --assignee $APPID --role contributor --scope $SCOPE_RG
-$ az role assignment create --assignee $APPID --role "User Access Administrator" --scope $SCOPE_RG
+$ az role assignment create --assignee $AAD_CLIENT_ID --role contributor --scope $SCOPE_RG
+$ az role assignment create --assignee $AAD_CLIENT_ID --role "User Access Administrator" --scope $SCOPE_RG
 
 ```
 
@@ -66,12 +66,10 @@ The following secrets will need to be created in the github repository as "Actio
 | --- | --- | 
 | AZURE_SUBSCRIPTION | ` az account show --query id -o tsv ` | 
 | AZURE_CREDENTIALS | copy the contents of sp.txt here. Json format will work | 
-| AAD_CLIENT_ID | `az ad app list --display-name $SP_NAME --query [].appId -o tsv` |
+| AAD_CLIENT_ID | `az ad sp list --all --query "[?displayName == '$SP_NAME'].appId" -o tsv` |
 | AAD_CLIENT_SECRET | `cat sp.txt \| jq -r .clientSecret ` | 
 | AAD_OBJECT_ID | `az ad sp show --id $AAD_CLIENT_ID --query id -o tsv`  |
 | ARO_RP_OB_ID | `az ad sp list --all --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].id" -o tsv` |
-| JUMPBOX_ADMIN_USER | \<insert the name of the windows user for the jumpbox\> | 
-| JUMPBOX_ADMIN_PWD | \<insert the password for the jumpbox\> | 
 | RESOURCEGROUP | \<insert the resource group name\> | 
 | PULL_SECRET | Format the Red Hat Pull Secret with the following command `cat pull-secret.json \| sed 's/"/\\"/g'` then place the output into the secret
 
