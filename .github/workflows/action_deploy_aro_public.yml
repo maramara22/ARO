@@ -2,13 +2,12 @@ name: ARO Public Deployment
 on: [workflow_dispatch]
 env:
   LOCATION: australiaeast
-  ARO_VNET: aro-vnet
-  CLUSTER_NAME: 'aro-cluster'
-  RESOURCEGROUP: 'aro-cluster-rg'
 
 jobs: 
   aro_networking:
     runs-on: ubuntu-latest
+    outputs:
+      vnetName: ${{ steps.network.outputs.vnetName }}
     steps:
     - name: checkout code
       uses: actions/checkout@v3
@@ -18,16 +17,16 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: ARO networking
+      id: network
       uses: azure/arm-deploy@v1
       with:
         scope: resourcegroup
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ env.RESOURCEGROUP }}
+        resourceGroupName: ${{ secrets.RESOURCEGROUP }}
         template: ./modules/aro_public_network.bicep
         parameters: >
           ./action_params/aro_public_networking.parameters.json
           location="${{ env.LOCATION }}"
-          spokeVnetName="${{ env.ARO_VNET }}"
         deploymentName: aro-public-networking-github-actions
 
   deploy_aro: 
@@ -47,17 +46,16 @@ jobs:
       with:
         scope: resourcegroup
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ env.RESOURCEGROUP }}
+        resourceGroupName: ${{ secrets.RESOURCEGROUP }}
         template: ./modules/aro_cluster.bicep
         parameters: >
           ./action_params/aro_public.parameters.json 
           pullSecret="${{ secrets.PULL_SECRET }}"
-          clusterName="${{ env.CLUSTER_NAME }}"
           location="${{ env.LOCATION }}"
           aadClientId="${{ secrets.AAD_CLIENT_ID }}"
           aadClientSecret="${{ secrets.AAD_CLIENT_SECRET }}"
           aadObjectId="${{ secrets.AAD_OBJECT_ID }}"
           rpObjectId="${{ secrets.ARO_RP_OB_ID }}"
-          spokeVnetName="${{ env.ARO_VNET }}"
+          vnetName="${{ needs.aro_networking.outputs.vnetName }}"
           addSpRoleAssignment='no'
         deploymentName: aro-public-github-actions
