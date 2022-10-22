@@ -8,6 +8,8 @@ A single resource group containing the virtual network and the OpenShift resourc
 
 Using the github actions workflow the bicep modules can be deployed from a github repo. The github actions deployment will be scoped to the resource group level. This means that there will initally be a additional steps to create a service principal, resource groups and assign the appropriate permissions. These steps will only have to be run once for as long as the resource groups and service principal remain within the Azure environment. The github actions workflow will use public runners unless otherwise configured.
 
+![Github actions pipeline](./images/github_actions.png)
+
 > :warning: Please be careful about how you store secrets. It is advised to use a private repo to ensure that there is a less chance of private data exposure.
 
 ## Github actions prerequisites
@@ -56,7 +58,6 @@ $ az role assignment create --assignee $AAD_CLIENT_ID --role "User Access Admini
 
 1. Modify the parameters found in `./github/workflows/action_deploy_aro_public.yml` and `./github/workflows/action_public_rg_cleanup.yml` to suit your environment.
     * LOCATION (location for resources)
-    * RESOURCEGROUP (the name of the resource group that stores the vnet [ensure this is the same value as in `action_public_rg_cleanup.yml`])
 
 ### Create github encrypted secrets to be used by github actions
 
