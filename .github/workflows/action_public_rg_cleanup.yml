@@ -18,7 +18,7 @@ jobs:
       with:
         scope: resourcegroup
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secret.RESOURCEGROUP }}
+        resourceGroupName: ${{ secrets.RESOURCEGROUP }}
         template: ./modules/resource_group_cleanup.bicep
         deploymentMode: Complete
         deploymentName: public-aro-resource-cleanup-github
