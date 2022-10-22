@@ -56,8 +56,6 @@ $ az role assignment create --assignee $APPID --role "User Access Administrator"
 
 1. Modify the parameters found in `./github/workflows/action_deploy_aro_public.yml` and `./github/workflows/action_public_rg_cleanup.yml` to suit your environment.
     * LOCATION (location for resources)
-    * ARO_VNET (name of the spoke vnet)
-    * CLUSTER_NAME (the name of the ARO cluster), and,
     * RESOURCEGROUP (the name of the resource group that stores the vnet [ensure this is the same value as in `action_public_rg_cleanup.yml`])
 
 ### Create github encrypted secrets to be used by github actions
@@ -74,8 +72,7 @@ The following secrets will need to be created in the github repository as "Actio
 | ARO_RP_OB_ID | `az ad sp list --all --query "[?appDisplayName=='Azure Red Hat OpenShift RP'].id" -o tsv` |
 | JUMPBOX_ADMIN_USER | \<insert the name of the windows user for the jumpbox\> | 
 | JUMPBOX_ADMIN_PWD | \<insert the password for the jumpbox\> | 
-| SPOKE_RG | \<insert the spoke resource group name\> | 
-| HUB_RG | \<insert the hub resource group name\> |
+| RESOURCEGROUP | \<insert the resource group name\> | 
 | PULL_SECRET | Format the Red Hat Pull Secret with the following command `cat pull-secret.json \| sed 's/"/\\"/g'` then place the output into the secret
 
 > :Note: The pull secret should have the following syntax prior to adding it to the github secret `{\"auths\":{\"cloud.openshift.com\":{\"auth\":\"XXXXXXXXXX\" ...`

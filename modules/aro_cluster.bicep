@@ -25,7 +25,7 @@ param computeVmDiskSize int
 param computeNodeCount int
 param apiServerVisibility string
 param ingressVisibility string
-param spokeVnetName string
+param vnetName string
 param controlPlaneSubnetName string
 param computeSubnetName string
 param fipsValidatedModules string
@@ -35,7 +35,7 @@ param addSpRoleAssignment string
 var contribRole = 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 param resourceGroupId string = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${domain}-${clusterName}-${location}'
 
-resource clusterVnet 'Microsoft.Network/virtualNetworks@2021-08-01' existing = { name: spokeVnetName }
+resource clusterVnet 'Microsoft.Network/virtualNetworks@2021-08-01' existing = { name: vnetName }
 
 resource role_for_aadObjectId 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = if (addSpRoleAssignment == 'yes') {
   name: guid(resourceGroup().id, aadObjectId, deployment().name)
@@ -82,7 +82,7 @@ resource aro 'Microsoft.RedHatOpenShift/openShiftClusters@2022-04-01' = {
     }
     masterProfile: {
       vmSize: controlPlaneVmSize
-      subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', spokeVnetName, controlPlaneSubnetName)
+      subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, controlPlaneSubnetName)
       encryptionAtHost: encryptionAtHost
     }
     workerProfiles: [
@@ -90,7 +90,7 @@ resource aro 'Microsoft.RedHatOpenShift/openShiftClusters@2022-04-01' = {
         name: 'worker'
         vmSize: computeVmSize
         diskSizeGB: computeVmDiskSize
-        subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', spokeVnetName, computeSubnetName)
+        subnetId: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, computeSubnetName)
         count: computeNodeCount
         encryptionAtHost: encryptionAtHost
       }

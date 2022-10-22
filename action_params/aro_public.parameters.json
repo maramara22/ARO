@@ -8,6 +8,9 @@
             "dept": "engineering"
         }
       },
+      "clusterName": {
+        "value": "aro"
+      },
       "domain": {
         "value": "aro-dev"
       },
