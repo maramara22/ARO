@@ -9,10 +9,10 @@
         }
       },
       "clusterName": {
-        "value": "aro"
+        "value": "aro-cluster"
       },
       "domain": {
-        "value": "aro-dev"
+        "value": "aro-pub"
       },
       "controlPlaneSubnetName": {
         "value": "controlplane"
@@ -27,7 +27,7 @@
         "value": "Public"
       },
       "fipsValidatedModules": {
-        "value": "Enabled"
+        "value": "Disabled"
       },
       "encryptionAtHost": {
         "value": "Disabled"
