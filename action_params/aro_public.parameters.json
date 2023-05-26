@@ -9,10 +9,10 @@
         }
       },
       "clusterName": {
-        "value": "aro-cluster"
+        "value": "aro-cluster-2"
       },
       "domain": {
-        "value": "aro-pub"
+        "value": "aro-pub-2"
       },
       "controlPlaneSubnetName": {
         "value": "controlplane"
