@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "acrName": {
-        "value": "aroacr"
+        "value": "aroacraccount4"
       },
       "acrSkuName": {
         "value": "Standard"
