@@ -9,7 +9,7 @@
         }
       },
       "vnetName": {
-        "value": "aro-vnet"
+        "value": "aro-vnet-2"
       },
       "vnetCidr": {
         "value": "10.1.0.0/16"
